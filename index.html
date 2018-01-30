@@ -12,16 +12,17 @@
 </head>
 <body>
   <div id="app">
-    <h5 style="border:none;">
+<!--     <h5 style="border:none;">
       <br/><br/>this message will disappear when <em>app</em> view is correctly rendered<br/><br/><br/>
-    </h5>
+    </h5> -->
   </div>
 
 
   <script src="src/models/video.js"></script>
+  <script src="src/models/search.js"></script>
   <script src="src/collections/videos.js"></script>
   <script src="src/lib/templateUrl.js"></script>
-
+  <script src="src/data/exampleVideoData.js"></script>
   <script src="src/views/app.js"></script>
   <script src="src/views/search.js"></script>
   <script src="src/views/videoList.js"></script>
@@ -30,7 +31,19 @@
 
   <script>
     backboneReady(() => {
-      new AppView();
+      
+      var get = $.ajax({
+        type: 'GET',
+        url: 'https://www.googleapis.com/youtube/v3/search?part=snippet&maxResults=5&q=javascript&key=AIzaSyA_CS6b4Xp5xUMkzBw6d1oghtKpyWXBiW8'
+      });
+
+      get.done((data) => {
+        var videos = data.items.map(function(video) { return new Video(video); });
+        var app = new AppView({ collection: new Videos(videos) });
+        app.render();
+      });
+
+      
     });
   </script>
 
