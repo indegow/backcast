@@ -28,7 +28,7 @@ var AppView = Backbone.View.extend({
     // }));
 
     
-
+    this.$el.html('');
     this.$el.append(this.template());
     var searchModel = new Search();
     searchModel.on('updatedSearchResults', (items) => {
