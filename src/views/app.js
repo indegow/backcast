@@ -1,4 +1,17 @@
 var AppView = Backbone.View.extend({
+  initialize: function (options) {
+    this.eventBus = _.extend({}, Backbone.Events);
+
+    this.eventBus.on('playVideo', (videoId) => {
+      var player = 
+        new VideoPlayerView({ el: '.player', model: this.collection.get(videoId), eventBus: this.eventBus });
+      // var list = 
+      //   new VideoListView({ el: '.list', collection: this.collection, eventBus: this.eventBus });
+      player.render();
+      // list.render();      
+    });
+  },
+
 
   el: '#app',
 
@@ -39,8 +52,8 @@ var AppView = Backbone.View.extend({
 
 
     var search = new SearchView({ el: '.search', model: searchModel });
-    var player = new VideoPlayerView({ el: '.player', model: this.collection.at(0) });
-    var list = new VideoListView({ el: '.list', collection: this.collection });
+    var player = new VideoPlayerView({ el: '.player', model: this.collection.at(0), eventBus: this.eventBus });
+    var list = new VideoListView({ el: '.list', collection: this.collection, eventBus: this.eventBus });
     search.render();
     player.render();
     list.render();
