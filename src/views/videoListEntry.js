@@ -1,9 +1,7 @@
 var VideoListEntryView = Backbone.View.extend({
 
-  initialize: function (options) {
-    this.eventBus = options.eventBus;
-  },
-
+  // just append each .video-list-entry element to
+  // the .video-list container
   render: function() {
     this.$el.append(this.template(this.model.attributes));
     return this;

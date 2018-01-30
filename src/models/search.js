@@ -4,6 +4,10 @@ var Search = Backbone.Model.extend({
     this.on('all', (event) => console.log(event));
   },
 
+  // get search results
+  // then trigger updatedSearchResults with
+  // our new list of videos from YT Data API
+  // (not models yet)
   search: function (type, q) {
     var get = $.ajax({
       type: 'GET',

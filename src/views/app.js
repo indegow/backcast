@@ -1,13 +1,21 @@
 var AppView = Backbone.View.extend({
   initialize: function (options) {
+
+
+    // create an eventBus from Backbone's Events object
     this.eventBus = _.extend({}, Backbone.Events);
 
+    // listen for playVideo events
+    // and update our player with the videoId
+    // given
     this.eventBus.on('playVideo', (videoId) => {
+      // use videoId to select a video from the collection
+      // that was clicked
       var player = 
         new VideoPlayerView({ el: '.player', model: this.collection.get(videoId), eventBus: this.eventBus });
       // var list = 
       //   new VideoListView({ el: '.list', collection: this.collection, eventBus: this.eventBus });
-      player.render();
+      player.render(); // re render
       // list.render();      
     });
   },
@@ -16,44 +24,35 @@ var AppView = Backbone.View.extend({
   el: '#app',
 
   render: function() {
-    
-    // var first = this.videos.at(0);
-    // var player = new VideoPlayerView();
-    // var list = new VideoListView();
+    this.$el.html(''); // clear html in #app
+    this.$el.append(this.template()); // append app template string (via underderscore template)
 
-    // var listEntiries = 
-    // this.videos.reduce(function (acc, model) {
-    //   return acc + new VideoListEntryView().template({
-    //     id: model.get('id'),
-    //     title: model.get('title'),
-    //     desc: model.get('desc')
-    //   });
-    // }, '');
+    // underscore template IN: object -> OUT: string
+    var searchModel = new Search(); // new Search model
 
-    // this.$el.html(this.template({
-    //   // search: search.template(),
-    //   player: player.template({
-    //     id: first.get('id'),
-    //     title: first.get('title'),
-    //     desc: first.get('desc')
-    //   }),
-    //   videoList: list.template({ videoList: listEntiries })
-    // }));
-
-    
-    this.$el.html('');
-    this.$el.append(this.template());
-    var searchModel = new Search();
+    // listen for updated search results
+    // take each result and update the collection of Videos
+    // then re render app
     searchModel.on('updatedSearchResults', (items) => {
       var videos = items.map((video) => new Video(video));
       this.collection.reset(videos);
-      this.render();
+      this.render(); // re render
     });
 
 
+    // new search view on .search element
     var search = new SearchView({ el: '.search', model: searchModel });
+
+
+    // new player view with shared event bus takes the first Video
+    // from Videos by default
     var player = new VideoPlayerView({ el: '.player', model: this.collection.at(0), eventBus: this.eventBus });
+
+    // new video list view with our collection
+    // use our shared event bus to get video information after clicks
     var list = new VideoListView({ el: '.list', collection: this.collection, eventBus: this.eventBus });
+
+    // render everything
     search.render();
     player.render();
     list.render();
